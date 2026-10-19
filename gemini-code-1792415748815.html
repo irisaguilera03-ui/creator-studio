@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Creator Studio SEO - Aplicación Local</title>
+  <style>
+    :root {
+      --bg: #0f111a;
+      --card: #181b29;
+      --input: #222638;
+      --accent: #8b5cf6;
+      --accent-hover: #7c3aed;
+      --gold: #f59e0b;
+      --text: #f3f4f6;
+      --muted: #9ca3af;
+      --border: #2a2f45;
+      --danger: #ef4444;
+      --success: #10b981;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    body { background: var(--bg); color: var(--text); display: flex; height: 100vh; overflow: hidden; }
+
+    /* Barra lateral */
+    aside { width: 250px; background: var(--card); border-right: 1px solid var(--border); display: flex; flex-direction: column; }
+    .logo { padding: 20px; font-weight: 700; color: var(--gold); font-size: 1.1rem; border-bottom: 1px solid var(--border); }
+    nav { flex: 1; padding: 12px 0; }
+    .nav-item {
+      width: 100%; padding: 12px 20px; background: none; border: none; color: var(--muted);
+      text-align: left; font-size: 0.9rem; cursor: pointer; display: flex; gap: 10px; align-items: center;
+    }
+    .nav-item:hover { background: var(--input); color: var(--text); }
+    .nav-item.active { background: var(--input); color: var(--accent); border-left: 3px solid var(--accent); }
+
+    /* Contenedor principal */
+    main { flex: 1; padding: 25px 35px; overflow-y: auto; }
+    .view { display: none; }
+    .view.active { display: block; }
+
+    h1 { font-size: 1.5rem; margin-bottom: 6px; }
+    .desc { color: var(--muted); font-size: 0.85rem; margin-bottom: 20px; }
+
+    .card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 20px; margin-bottom: 20px; }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px; }
+    .field { display: flex; flex-direction: column; gap: 6px; margin-bottom: 12px; }
+    label { font-size: 0.8rem; color: var(--muted); font-weight: 600; }
+    input, select, textarea {
+      background: var(--input); border: 1px solid var(--border); border-radius: 6px;
+      padding: 9px 12px; color: var(--text); font-size: 0.85rem; outline: none;
+    }
+    input:focus, select:focus, textarea:focus { border-color: var(--accent); }
+
+    .btn {
+      background: var(--accent); color: #fff; border: none; border-radius: 6px;
+      padding: 10px 16px; font-weight: 600; font-size: 0.85rem; cursor: pointer;
+    }
+    .btn:hover { background: var(--accent-hover); }
+    .btn-secondary { background: transparent; border: 1px solid var(--border); color: var(--muted); }
+    .btn-secondary:hover { background: var(--input); color: var(--text); }
+
+    /* Módulos de salida */
+    .idea-box { background: var(--input); border-radius: 6px; padding: 14px; margin-top: 12px; border-left: 3px solid var(--accent); }
+    .idea-box h4 { font-size: 0.95rem; margin-bottom: 4px; }
+    .idea-box p { font-size: 0.8rem; color: var(--muted); margin: 3px 0; }
+
+    /* Editor de Miniatura */
+    .canvas-box { display: flex; gap: 20px; }
+    canvas { background: #000; border-radius: 6px; border: 1px solid var(--border); max-width: 600px; height: auto; }
+  </style>
+</head>
+<body>
+
+  <aside>
+    <div class="logo">✦ Creator Studio SEO</div>
+    <nav>
+      <button class="nav-item active" onclick="navigate('ideas')">💡 Ideas & Ganchos</button>
+      <button class="nav-item" onclick="navigate('seo')">🎯 Optimizador SEO</button>
+      <button class="nav-item" onclick="navigate('thumb')">🎨 Editor Miniaturas</button>
+      <button class="nav-item" onclick="navigate('library')">📁 Proyectos Guardados</button>
+    </nav>
+  </aside>
+
+  <main>
+    <!-- VISTA 1: IDEAS -->
+    <section id="view-ideas" class="view active">
+      <h1>Generador de Ideas y Ganchos</h1>
+      <p class="desc">Generación rápida de conceptos virales con gancho (hook) y llamada a la acción.</p>
+      
+      <div class="card">
+        <div class="grid-2">
+          <div class="field">
+            <label>Nicho / Tema</label>
+            <input type="text" id="niche" value="Esoterismo y Magia">
+          </div>
+          <div class="field">
+            <label>Palabra Clave</label>
+            <input type="text" id="keyword" value="Laurel y abundancia">
+          </div>
+        </div>
+        <div class="grid-2">
+          <div class="field">
+            <label>Plataforma</label>
+            <select id="platform">
+              <option value="YouTube Shorts">YouTube Shorts</option>
+              <option value="TikTok">TikTok</option>
+              <option value="YouTube Largo">YouTube Largo (10 min+)</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Ángulo de Enfoque</label>
+            <select id="angle">
+              <option value="error">Mitos y Errores Críticos</option>
+              <option value="paso">Paso a Paso Práctico</option>
+              <option value="secreto">Revelación o Misterio</option>
+            </select>
+          </div>
+        </div>
+        <button class="btn" onclick="crearIdeas()">Generar 3 Ideas Estructuradas</button>
+      </div>
+
+      <div id="ideas-res"></div>
+    </section>
+
+    <!-- VISTA 2: SEO -->
+    <section id="view-seo" class="view">
+      <h1>Optimizador de Títulos y SEO</h1>
+      <p class="desc">Comprobador cualitativo de longitud y presencia de palabras clave.</p>
+      
+      <div class="card">
+        <div class="field">
+          <label>Título propuesto</label>
+          <input type="text" id="seo-t" placeholder="Ej: El error al quemar laurel que aleja tu dinero..." oninput="checkSEO()">
+          <span id="char-count" style="font-size: 0.75rem; color: var(--muted); margin-top: 4px;">0 / 100 caracteres</span>
+        </div>
+        <div class="field">
+          <label>Palabra clave principal</label>
+          <input type="text" id="seo-k" placeholder="quemar laurel" oninput="checkSEO()">
+        </div>
+        <div id="seo-report" style="margin-top: 15px; font-size: 0.85rem; color: var(--muted); line-height: 1.6;"></div>
+      </div>
+    </section>
+
+    <!-- VISTA 3: MINIATURAS -->
+    <section id="view-thumb" class="view">
+      <h1>Estudio de Miniaturas y Prompts</h1>
+      <p class="desc">Diseño gráfico en lienzo y generación de descripción visual en inglés para generadores de imágenes.</p>
+      
+      <div class="card canvas-box">
+        <div>
+          <canvas id="c" width="1280" height="720"></canvas>
+        </div>
+        <div style="flex: 1;">
+          <div class="field">
+            <label>Subir Imagen de Fondo</label>
+            <input type="file" id="bg-img-input" accept="image/*" onchange="loadBgImage(event)">
+          </div>
+          <div class="field">
+            <label>Texto en Miniatura (Máx. 4 palabras)</label>
+            <input type="text" id="thumb-txt" value="¡NO HAGAS ESTO!" oninput="renderThumb()">
+          </div>
+          <div class="field" id="bg-color-field">
+            <label>Color de Fondo (si no usas imagen)</label>
+            <input type="color" id="bg-col" value="#160e29" onchange="renderThumb()">
+          </div>
+          <div class="field">
+            <label>Color de Letra</label>
+            <input type="color" id="txt-col" value="#f59e0b" onchange="renderThumb()">
+          </div>
+          <div class="field">
+            <label>Formato</label>
+            <select id="ratio" onchange="resizeThumb()">
+              <option value="16:9">YouTube Horizontal (16:9)</option>
+              <option value="9:16">Shorts / TikTok (9:16)</option>
+              <option value="1:1">Cuadrado (1:1)</option>
+            </select>
+          </div>
+          <button class="btn" style="width: 100%; margin-top: 8px;" onclick="downloadThumb()">Descargar Imagen PNG</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <label>Prompt Visual Generado (en inglés, listo para copiar):</label>
+        <textarea id="prompt-txt" rows="3" readonly style="width: 100%; margin-top: 6px; font-family: monospace;"></textarea>
+      </div>
+    </section>
+
+    <!-- VISTA 4: BIBLIOTECA -->
+    <section id="view-library" class="view">
+      <h1>Biblioteca Local</h1>
+      <p class="desc">Elementos guardados temporalmente durante tu sesión.</p>
+      <div class="card" id="lib-content">
+        <p style="color: var(--muted); font-size: 0.85rem;">No hay proyectos guardados en esta sesión.</p>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    let bgImage = null;
+
+    function navigate(id) {
+      document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+      document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+      document.getElementById('view-' + id).classList.add('active');
+      event.currentTarget.classList.add('active');
+      if (id === 'thumb') renderThumb();
+    }
+
+    function loadBgImage(event) {
+      const file = event.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          bgImage = new Image();
+          bgImage.onload = function() {
+            renderThumb();
+          };
+          bgImage.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+
+    function crearIdeas() {
+      const kw = document.getElementById('keyword').value || 'tu tema';
+      const n = document.getElementById('niche').value;
+      const res = document.getElementById('ideas-res');
+
+      const items = [
+        {
+          t: `El error crítico con ${kw} que casi todos cometen`,
+          h: `Si estás haciendo esto con ${kw}, podrías estar provocando el efecto contrario...`,
+          cta: "Comenta tu experiencia para corregirlo."
+        },
+        {
+          t: `Guía rápida de ${kw} en 3 pasos simples`,
+          h: `No te compliques: esto es lo único que necesitas para empezar hoy mismo.`,
+          cta: "Guarda este vídeo para tener los pasos a mano."
+        },
+        {
+          t: `La verdad que nadie te dice sobre ${kw} en ${n}`,
+          h: `Durante años se repitió lo mismo, pero la tradición antigua dice otra cosa...`,
+          cta: "¿Lo sabías? Te leo en comentarios."
+        }
+      ];
+
+      res.innerHTML = "";
+      items.forEach(it => {
+        res.innerHTML += `
+          <div class="idea-box">
+            <h4>${it.t}</h4>
+            <p><strong>Gancho (0-3s):</strong> "${it.h}"</p>
+            <p><strong>Llamada a la acción:</strong> ${it.cta}</p>
+            <button class="btn btn-secondary" style="margin-top: 8px; font-size: 0.75rem;" onclick="saveItem('${it.t}')">Guardar Idea</button>
+          </div>
+        `;
+      });
+    }
+
+    function checkSEO() {
+      const t = document.getElementById('seo-t').value;
+      const k = document.getElementById('seo-k').value.toLowerCase();
+      const rep = document.getElementById('seo-report');
+      document.getElementById('char-count').innerText = `${t.length} / 100 caracteres`;
+
+      let msg = [];
+      if (t.length >= 40 && t.length <= 65) {
+        msg.push("✅ Longitud ideal para visualización en móviles (40-65 car.).");
+      } else {
+        msg.push("⚠️ Procura mantener el título entre 40 y 65 caracteres para no sufrir recortes.");
+      }
+
+      if (k && t.toLowerCase().includes(k)) {
+        msg.push("✅ Palabra clave incluida en el título.");
+      } else {
+        msg.push("⚠️ La palabra clave no aparece de forma exacta en el título.");
+      }
+
+      rep.innerHTML = msg.map(m => `<div>${m}</div>`).join('');
+    }
+
+    function resizeThumb() {
+      const c = document.getElementById('c');
+      const r = document.getElementById('ratio').value;
+      if (r === '16:9') { c.width = 1280; c.height = 720; }
+      else if (r === '9:16') { c.width = 720; c.height = 1280; }
+      else { c.width = 1080; c.height = 1080; }
+      renderThumb();
+    }
+
+    function renderThumb() {
+      const c = document.getElementById('c');
+      const ctx = c.getContext('2d');
+      const txt = document.getElementById('thumb-txt').value;
+      const bg = document.getElementById('bg-col').value;
+      const fg = document.getElementById('txt-col').value;
+
+      ctx.clearRect(0, 0, c.width, c.height);
+
+      if (bgImage) {
+        // Redimensionar y recortar la imagen cargada para llenar el lienzo preservando la relación de aspecto
+        const imgRatio = bgImage.width / bgImage.height;
+        const cRatio = c.width / c.height;
+        let sx, sy, sWidth, sHeight;
+
+        if (imgRatio > cRatio) {
+          sHeight = bgImage.height;
+          sWidth = bgImage.height * cRatio;
+          sx = (bgImage.width - sWidth) / 2;
+          sy = 0;
+        } else {
+          sWidth = bgImage.width;
+          sHeight = bgImage.width / cRatio;
+          sx = 0;
+          sy = (bgImage.height - sHeight) / 2;
+        }
+        ctx.drawImage(bgImage, sx, sy, sWidth, sHeight, 0, 0, c.width, c.height);
+      } else {
+        ctx.fillStyle = bg;
+        ctx.fillRect(0, 0, c.width, c.height);
+      }
+
+      ctx.fillStyle = fg;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.font = `bold ${c.width / 15}px sans-serif`;
+      
+      // Sombra
+      ctx.shadowColor = "black";
+      ctx.shadowBlur = 10;
+      ctx.shadowOffsetX = 5;
+      ctx.shadowOffsetY = 5;
+
+      ctx.fillText(txt, c.width / 2, c.height / 2);
+
+      // Limpiar sombra para futuras operaciones
+      ctx.shadowColor = "transparent";
+
+      document.getElementById('prompt-txt').value =
+        `Dark mystical composition, centered subject representing ${txt.toLowerCase()}, high contrast rim lighting, 8k resolution, cinematic atmosphere --ar 16:9`;
+    }
+
+    function downloadThumb() {
+      const c = document.getElementById('c');
+      const a = document.createElement('a');
+      a.download = 'miniatura.png';
+      a.href = c.toDataURL('image/png');
+      a.click();
+    }
+
+    let saved = [];
+    function saveItem(title) {
+      saved.push(title);
+      document.getElementById('lib-content').innerHTML = saved.map(s => `<div class="idea-box"><h4>${s}</h4></div>`).join('');
+      alert("Guardado en la biblioteca");
+    }
+
+    window.onload = renderThumb;
+  </script>
+</body>
+</html>
